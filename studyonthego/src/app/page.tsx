@@ -334,7 +334,7 @@ export default function Home() {
                     <li
                       className="cursor-pointer"
                       data-subtopic={subtopic}
-                      onClick={(e) => {
+                      onClick={() => {
                         generateLesson(topic.name, subtopic);
                       }}
                       key={subIndex}
