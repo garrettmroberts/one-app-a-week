@@ -23,6 +23,8 @@ export default function Home() {
   });
   const [openTopics, setOpenTopics] = useState<{ [key: number]: boolean }>({});
   const isProgrammaticChange = useRef(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     const localStorageSyllabus = localStorage.getItem("syllabus");
@@ -135,7 +137,7 @@ export default function Home() {
         },
         body: JSON.stringify({
           model: 'gpt-4o',
-          input: `You are a teacher. You are teaching a college student about '${subject}'. You are currently teaching a series about '${topic}'. Write a 500 word lecture about '${subtopic}' that fits into your curriculum so that I can better understand it. Format your response as if you were giving a lecture.`,
+          input: `You are a teacher. You are teaching a college student about '${subject}'. You are currently teaching a series about '${topic}'. Write a 500 word lecture about '${subtopic}' that fits into your curriculum so that I can better understand it`,
         }),
       });
 
@@ -177,6 +179,73 @@ export default function Home() {
     }));
   };
 
+  const speakText = (text: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text.trim());
+      utterance.lang = 'en-US'; // Set language
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        setIsPaused(false);
+      };
+      window.speechSynthesis.speak(utterance);
+    } else {
+      setError("Text-to-Speech is not supported in this browser.");
+    }
+  };
+
+  const pauseSpeech = () => {
+    if ('speechSynthesis' in window && isSpeaking && !isPaused) {
+      window.speechSynthesis.pause();
+      setIsPaused(true);
+    }
+  };
+
+  const resumeSpeech = () => {
+    if ('speechSynthesis' in window && isSpeaking && isPaused) {
+      window.speechSynthesis.resume();
+      setIsPaused(false);
+    }
+  };
+
+  const stopSpeech = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      setIsPaused(false);
+    }
+  };
+
+  const handleReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSubject('');
+    setSyllabus([]);
+    setTopic('');
+    setSubtopic('');
+    setCurrentLesson('');
+
+    localStorage.removeItem("subject");
+    localStorage.removeItem("syllabus");
+    localStorage.removeItem("topic");
+    localStorage.removeItem("subtopic");
+    localStorage.removeItem("currentLesson");
+
+    stopSpeech();
+    setIsSpeaking(false);
+    setIsPaused(false);
+  
+    isProgrammaticChange.current = true;
+    setDetailsState({
+      prompt: true,
+      syllabus: false,
+      lecture: false,
+      reset: false,
+    });
+    setTimeout(() => {
+      isProgrammaticChange.current = false;
+    }, 100);
+  }
+
   return (
     <div className="p-4 md:p-8 flex items-center justify-center flex-col gap-5 min-h-screen bg-gray-100 w-full">
       {/* Toast */}
@@ -194,7 +263,7 @@ export default function Home() {
 
       {/* Spinner */}
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}
@@ -219,11 +288,15 @@ export default function Home() {
             className="w-full px-4 py-2 border border-gray-300 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
+            disabled={syllabus.length > 0}
           />
           <button
             onClick={(e) => generateSyllabus(e)}
-            className={`w-full mt-5 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 cursor-pointer`}
+            className={`w-full my-3 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
+              syllabus.length === 0 ? 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
             type="submit"
+            disabled={syllabus.length > 0 }
           >
             Enter
           </button>
@@ -292,6 +365,48 @@ export default function Home() {
         <div className="text-gray-700 whitespace-pre-wrap">
           {currentLesson || "No lecture available. Please select a subtopic."}
         </div>
+        {currentLesson && (
+          <div className="mt-4 flex gap-4">
+            <button
+              onClick={() => {
+                speakText(currentLesson);
+              }}
+              disabled={isSpeaking || isPaused}
+              className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
+                !isSpeaking && !isPaused ? 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              Play Lecture
+            </button>
+            <button
+              onClick={pauseSpeech}
+              disabled={!isSpeaking || isPaused}
+              className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
+                isSpeaking && !isPaused ? 'bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              Pause
+            </button>
+            <button
+              onClick={resumeSpeech}
+              disabled={!isSpeaking || !isPaused}
+              className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
+                isSpeaking && isPaused ? 'bg-green-500 text-white hover:bg-green-600 focus:ring-green-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              Resume
+            </button>
+            <button
+              onClick={stopSpeech}
+              disabled={!isSpeaking}
+              className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
+                isSpeaking ? 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              Stop
+            </button>
+          </div>
+        )}
       </details>
   
       {/* Reset */}
@@ -308,31 +423,7 @@ export default function Home() {
           Reset
         </summary>
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            setSubject('');
-            setSyllabus([]);
-            setTopic('');
-            setSubtopic('');
-            setCurrentLesson('');
-
-            localStorage.removeItem("subject");
-            localStorage.removeItem("syllabus");
-            localStorage.removeItem("topic");
-            localStorage.removeItem("subtopic");
-            localStorage.removeItem("currentLesson");
-          
-            isProgrammaticChange.current = true;
-            setDetailsState({
-              prompt: true,
-              syllabus: false,
-              lecture: false,
-              reset: false,
-            });
-            setTimeout(() => {
-              isProgrammaticChange.current = false;
-            }, 100);
-          }}
+          onClick={(e) => {handleReset(e)}}
           className="w-full mt-5 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer"
         >
           Reset All
