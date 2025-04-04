@@ -182,7 +182,7 @@ export default function Home() {
   const speakText = (text: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text.trim());
-      utterance.lang = 'en-US'; // Set language
+      utterance.lang = 'en-US';
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => {
         setIsSpeaking(false);
