@@ -365,50 +365,52 @@ export default function Home() {
         <div className="text-gray-700 whitespace-pre-wrap">
           {currentLesson || "No lecture available. Please select a subtopic."}
         </div>
-        {currentLesson && (
-          <div className="mt-4 flex gap-4">
-            <button
-              onClick={() => {
-                speakText(currentLesson);
-              }}
-              disabled={isSpeaking || isPaused}
-              className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
-                !isSpeaking && !isPaused ? 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              Play Lecture
-            </button>
-            <button
-              onClick={pauseSpeech}
-              disabled={!isSpeaking || isPaused}
-              className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
-                isSpeaking && !isPaused ? 'bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              Pause
-            </button>
-            <button
-              onClick={resumeSpeech}
-              disabled={!isSpeaking || !isPaused}
-              className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
-                isSpeaking && isPaused ? 'bg-green-500 text-white hover:bg-green-600 focus:ring-green-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              Resume
-            </button>
-            <button
-              onClick={stopSpeech}
-              disabled={!isSpeaking}
-              className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
-                isSpeaking ? 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              Stop
-            </button>
-          </div>
-        )}
       </details>
-  
+
+      {/* Lecture Controls */}
+      {currentLesson && (
+        <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg flex gap-4">
+          <button
+            onClick={() => {
+              speakText(currentLesson);
+            }}
+            disabled={isSpeaking || isPaused}
+            className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
+              !isSpeaking && !isPaused ? 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            Play Lecture
+          </button>
+          <button
+            onClick={pauseSpeech}
+            disabled={!isSpeaking || isPaused}
+            className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
+              isSpeaking && !isPaused ? 'bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            Pause
+          </button>
+          <button
+            onClick={resumeSpeech}
+            disabled={!isSpeaking || !isPaused}
+            className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
+              isSpeaking && isPaused ? 'bg-green-500 text-white hover:bg-green-600 focus:ring-green-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            Resume
+          </button>
+          <button
+            onClick={stopSpeech}
+            disabled={!isSpeaking}
+            className={`py-2 px-4 rounded-lg focus:outline-none focus:ring-2 ${
+              isSpeaking ? 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            Stop
+          </button>
+        </div>
+      )}
+
       {/* Reset */}
       <details
         open={detailsState.reset} 
