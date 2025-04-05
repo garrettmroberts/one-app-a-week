@@ -23,7 +23,7 @@ I created this project as part of a personal challenge to build one hackathon-st
 
 - Optimize prompts with structured inputs and outputs.
 - Retain client context between api calls to save on api fees.
-- Receive lecture text as a stream for quicker viewing, sync voice with stream for quicker listening.
 - Options tab allowing for changes in tone, attitude, grade level, lenth of lecture, etc.
 - Open Q&A session at end of lecture, supporting microphone access.
 - Allow for more fine tuning of syllabus via chat.
+- testing and linting

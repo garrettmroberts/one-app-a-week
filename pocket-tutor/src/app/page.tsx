@@ -123,40 +123,36 @@ export default function Home() {
   };
 
   const generateLesson = async (topic: string, subtopic: string) => {
-    setTopic(topic);
-    setSubtopic(subtopic);
-    localStorage.setItem("topic", topic);
-    localStorage.setItem("subtopic", subtopic);
-    setLoading(true); // Show spinner
 
     try {
-      const response = await fetch('/api/openai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          input: `You are a teacher. You are teaching a college student about '${subject}'. You are currently teaching a series about '${topic}'. Write a 500 word lecture about '${subtopic}' that fits into your curriculum so that I can better understand it`,
-        }),
-      });
+      const eventSource = new EventSource(`/api/openai/lesson?subject=${subject}&topic=${topic}&subtopic=${subtopic}`);
+      setCurrentLesson('');
+      setTopic(topic);
+      setSubtopic(subtopic);
 
-      const data = await response.json();
-      if (response.ok) {
-        setCurrentLesson(data.output_text);
-        localStorage.setItem("currentLesson", data.output_text);
-        isProgrammaticChange.current = true;
-        setDetailsState({
-          prompt: false,
-          syllabus: false,
-          lecture: true,
-          reset: false,
-        });
-        setTimeout(() => {
-          isProgrammaticChange.current = false;
-        }, 100);
-      } else {
-        setError('Error generating subtopic text: ' + data.error);
+      isProgrammaticChange.current = true;
+          setDetailsState({
+            prompt: false,
+            syllabus: false,
+            lecture: true,
+            reset: false,
+          });
+          setTimeout(() => {
+            isProgrammaticChange.current = false;
+          }, 100);
+      
+      eventSource.onmessage = event => {
+        const text = event.data;
+        if (text === "[DONE]") {
+          eventSource.close();
+        } else {
+          setCurrentLesson(prev => prev + text);
+        }
+      }
+
+      eventSource.onerror = error => {
+        console.error('stream error: ', error);
+        eventSource.close();
       }
     } catch (error) {
       setError('Error: ' + (error instanceof Error ? error.message : 'An unknown error occurred'));
@@ -430,6 +426,24 @@ export default function Home() {
         >
           Reset All
         </button>
+        <button onClick={() => {
+          const eventSource = new EventSource(`/api/openai/stream?subject=${subject}&topic=${topic}&subtopic=${subtopic}`);
+          setCurrentLesson('');
+          
+          eventSource.onmessage = event => {
+            const text = event.data;
+            if (text === "[DONE]") {
+              eventSource.close();
+            } else {
+              setCurrentLesson(prev => prev + text);
+            }
+          }
+
+          eventSource.onerror = error => {
+            console.error('stream error: ', error);
+            eventSource.close();
+          }
+        }}>TESTING</button>
       </details>
     </div>
   );
