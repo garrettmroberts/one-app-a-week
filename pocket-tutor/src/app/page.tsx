@@ -79,12 +79,13 @@ export default function Home() {
   const generateSyllabus = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setLoading(true);
+  
     if (subject.length < 3) {
       setError("Enter a valid subject.");
       setLoading(false);
       return;
     }
-
+  
     try {
       const response = await fetch('/api/openai', {
         method: 'POST',
@@ -96,22 +97,23 @@ export default function Home() {
           input: `You are a teacher. Create a bulleted list of topics that should be studied for a student to gain a better understanding of ${subject}. Format your response as an array. Each array element should be an object with a name field and a subtopics field. Do not return triple backticks or the words 'json'.`,
         }),
       });
-
+  
       const data = await response.json();
       if (response.ok) {
         setSyllabus(JSON.parse(data.output_text) as Topic[]);
         localStorage.setItem("subject", subject);
-
+  
         isProgrammaticChange.current = true;
-        setDetailsState({
-          prompt: true,
+        setDetailsState((prevState) => ({
+          ...prevState,
+          prompt: false,
           syllabus: true,
           lecture: false,
           reset: false,
-        });
+        }));
         setTimeout(() => {
           isProgrammaticChange.current = false;
-        }, 100);
+        }, 200);
       } else {
         setError('Error generating syllabus: ' + data.error);
       }
@@ -131,15 +133,15 @@ export default function Home() {
       setSubtopic(subtopic);
 
       isProgrammaticChange.current = true;
-          setDetailsState({
-            prompt: false,
-            syllabus: false,
-            lecture: true,
-            reset: false,
-          });
-          setTimeout(() => {
-            isProgrammaticChange.current = false;
-          }, 100);
+      setDetailsState({
+        prompt: false,
+        syllabus: false,
+        lecture: true,
+        reset: false,
+      });
+      setTimeout(() => {
+        isProgrammaticChange.current = false;
+      }, 100);
       
       eventSource.onmessage = event => {
         const text = event.data;
@@ -426,24 +428,6 @@ export default function Home() {
         >
           Reset All
         </button>
-        <button onClick={() => {
-          const eventSource = new EventSource(`/api/openai/stream?subject=${subject}&topic=${topic}&subtopic=${subtopic}`);
-          setCurrentLesson('');
-          
-          eventSource.onmessage = event => {
-            const text = event.data;
-            if (text === "[DONE]") {
-              eventSource.close();
-            } else {
-              setCurrentLesson(prev => prev + text);
-            }
-          }
-
-          eventSource.onerror = error => {
-            console.error('stream error: ', error);
-            eventSource.close();
-          }
-        }}>TESTING</button>
       </details>
     </div>
   );

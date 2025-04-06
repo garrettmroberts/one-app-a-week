@@ -17,12 +17,8 @@ export async function GET(req: Request) {
   try {
     const stream = await openai.responses.create({
       model: "gpt-4o",
-      input: [
-        {
-          role: "user",
-          content: `You are a teacher. You are teaching a college student about '${subject}'. You are currently teaching a series about '${topic}'. Write a 500 word lecture about '${subtopic}' that fits into your curriculum so that I can better understand it`,
-        },
-      ],
+      instructions: `You will receive input like this: <subject>::<topic>::<subtopic>. Explain the subtopic in plaintext only. Use 500 - 1000 words.  Do not use Markdown formatting like backticks, asterisks, headers, or code blocks.`,
+      input: `Tell me about ${subject}::${topic}::${subtopic}`,
       stream: true,
     });
 

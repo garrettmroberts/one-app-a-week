@@ -21,9 +21,9 @@ I created this project as part of a personal challenge to build one hackathon-st
 
 ## Future Improvements
 
-- Optimize prompts with structured inputs and outputs.
-- Retain client context between api calls to save on api fees.
-- Options tab allowing for changes in tone, attitude, grade level, lenth of lecture, etc.
+- Better formatting on response text
+- Retain client context between api calls.
+- Options tab allowing for changes in tone, attitude, difficulty level, lenth of lecture, etc.
 - Open Q&A session at end of lecture, supporting microphone access.
 - Allow for more fine tuning of syllabus via chat.
 - testing and linting
