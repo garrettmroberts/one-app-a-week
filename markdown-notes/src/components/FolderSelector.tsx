@@ -5,21 +5,21 @@ import { LuFolderClosed, LuFolderOpen } from 'react-icons/lu';
 const FolderSelector = () => {
   const [folders] = useState(sf);
   const [activeFolder, setActiveFolder] = useState(folders[folders.length - 1]);
-  const [isNotebookDirOpen, setIsNotebookDirOpen] = useState(false);
+  const [isFoldersDirOpen, setIsFoldersDirOpen] = useState(false);
   return (
     <div className="folder-selector-container">
       <div
         className="folder-selector"
         onClick={() => {
-          setIsNotebookDirOpen(!isNotebookDirOpen);
+          setIsFoldersDirOpen(!isFoldersDirOpen);
         }}
         role="button"
         tabIndex={0}
-        aria-expanded={isNotebookDirOpen}
+        aria-expanded={isFoldersDirOpen}
         aria-haspopup="listbox"
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
-            setIsNotebookDirOpen(!isNotebookDirOpen);
+            setIsFoldersDirOpen(!isFoldersDirOpen);
           }
         }}
       >
@@ -31,14 +31,14 @@ const FolderSelector = () => {
           </div>
         </div>
         <div
-          className={`folder-selector__chevron ${isNotebookDirOpen ? 'folder-selector__chevron--open' : ''}`}
+          className={`folder-selector__chevron ${isFoldersDirOpen ? 'folder-selector__chevron--open' : ''}`}
           aria-hidden="true"
         />
       </div>
       <div
-        className={`folder-selector__dropdown ${isNotebookDirOpen ? 'folder-selector__dropdown--visible' : ''}`}
+        className={`folder-selector__dropdown ${isFoldersDirOpen ? 'folder-selector__dropdown--visible' : ''}`}
         role="listbox"
-        aria-hidden={!isNotebookDirOpen}
+        aria-hidden={!isFoldersDirOpen}
       >
         {folders
           .filter((f) => f !== activeFolder)
@@ -49,10 +49,10 @@ const FolderSelector = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 setActiveFolder(f);
-                setIsNotebookDirOpen(false);
+                setIsFoldersDirOpen(false);
               }}
               role="option"
-              tabIndex={isNotebookDirOpen ? 0 : -1}
+              tabIndex={isFoldersDirOpen ? 0 : -1}
               aria-selected={false}
             >
               <LuFolderClosed aria-hidden="true" />

@@ -9,6 +9,7 @@ import {
 import React from 'react';
 import NotebookFinder from './NotebookFinder';
 import FolderSelector from './FolderSelector';
+import PageSelector from './PageSelector';
 
 const Navigator = () => {
   const [navWidth, setNavWidth] = useState(250);
@@ -65,6 +66,7 @@ const Navigator = () => {
       <div className="navigator__body">
         <NotebookFinder />
         <FolderSelector />
+        <PageSelector />
       </div>
       <div className="navigator__footer">
         {!isCollapsed && <span>3 notebooks</span>}
