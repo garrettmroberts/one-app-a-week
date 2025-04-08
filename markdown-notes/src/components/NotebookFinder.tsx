@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import { SampleNotebooks as sn } from '../constants/temp';
 import { LuNotebook, LuNotebookPen } from 'react-icons/lu';
 
-interface NotebookFinderProps {
-  collapsed: boolean;
-}
-
-const NotebookFinder = ({ collapsed }: NotebookFinderProps) => {
+const NotebookFinder = () => {
   const [notebooks] = useState(sn);
   const [activeNotebook, setActiveNotebook] = useState(notebooks[0]);
   const [isNotebookDirOpen, setIsNotebookDirOpen] = useState(false);

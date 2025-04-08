@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import { SampleFolders as sf, SamplePages as sp } from '../constants/temp';
 import { HiLightningBolt } from 'react-icons/hi';
 import {
   MdChevronLeft,
@@ -14,7 +13,6 @@ const Navigator = () => {
   const [navWidth, setNavWidth] = useState(250);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [width, setWidth] = useState(250);
 
   const draggingRef = useRef(false);
 
@@ -64,7 +62,7 @@ const Navigator = () => {
         </button>
       </div>
       <div className="navigator__body">
-        <NotebookFinder collapsed={isCollapsed} />
+        <NotebookFinder />
       </div>
       <div className="navigator__footer">
         {!isCollapsed && <span>3 notebooks</span>}
