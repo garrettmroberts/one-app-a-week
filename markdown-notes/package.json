@@ -16,7 +16,6 @@
     "react-icons": "^5.5.0",
     "react-scripts": "5.0.1",
     "sass": "^1.86.3",
-    "typescript": "^5.8.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -26,7 +25,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prettier": "prettier --config .prettierrc 'src/**/*.{ts,tsx}' --write"
   },
   "build": {
     "appId": "com.example.myapp",
@@ -54,7 +54,16 @@
     ]
   },
   "devDependencies": {
+    "@eslint/js": "^9.24.0",
+    "@typescript-eslint/parser": "^5.62.0",
     "electron": "^35.1.4",
-    "electron-is-dev": "^3.0.1"
+    "electron-is-dev": "^3.0.1",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "prettier-eslint": "^16.3.0",
+    "typescript": "^4.9.5",
+    "typescript-eslint": "^8.29.1"
   }
 }
