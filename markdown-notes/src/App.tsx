@@ -33,7 +33,7 @@ function App() {
           className="spacer" 
           onMouseDown={() => handleMouseDown()}
         />
-        <div className="editor">editor</div>
+        <div className="editor" />
       </main>
   );
 }

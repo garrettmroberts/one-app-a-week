@@ -1,29 +1,8 @@
-main {
-  text-align: center;
-  background-color: $clr-surface-a0;
-  color: #5e9d10;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-
-  & > div:not(.spacer) {
-    background-color: $clr-surface-a10;
-    border-radius: 9px;
-  }
+.editor {
+  flex: 1;
 }
-  
-  .editor {
-    flex: 1;
-  }
-  
-  .spacer {
-    width: 9px;
-    cursor: pointer;
-  }
-  
-  .notebook {
-    padding: 10px;
-    color: white;
-    cursor: pointer;
-  }
+
+.spacer {
+  width: 9px;
+  cursor: pointer;
+}
