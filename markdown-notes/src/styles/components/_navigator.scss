@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 .navigator {
   background-color: $clr-surface-a10;
   display: grid;
