@@ -1,20 +1,17 @@
 // Abstracts
-@import "abstracts/variables";
-
+@import 'abstracts/variables';
 
 // Base
 @import 'base/reset';
 @import 'base/root';
 
-
 // Components
+@import 'components/folder-selector';
 @import 'components/navigator';
 @import 'components/notebook-finder';
 
-
 // Layout
 @import 'layout';
-
 
 // Pages
 @import 'pages';

@@ -8,6 +8,7 @@ import {
 } from 'react-icons/md';
 import React from 'react';
 import NotebookFinder from './NotebookFinder';
+import FolderSelector from './FolderSelector';
 
 const Navigator = () => {
   const [navWidth, setNavWidth] = useState(250);
@@ -63,6 +64,7 @@ const Navigator = () => {
       </div>
       <div className="navigator__body">
         <NotebookFinder />
+        <FolderSelector />
       </div>
       <div className="navigator__footer">
         {!isCollapsed && <span>3 notebooks</span>}
