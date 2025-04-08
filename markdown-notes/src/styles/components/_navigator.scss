@@ -79,6 +79,37 @@
     overflow: scroll;
   }
 
+  &__footer {
+    font-size: 0.8rem;
+    color: $clr-light-a0;
+    font-weight: 500;
+    margin: 0 0 4px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 12px;
+    cursor: default;
+
+    &__actions {
+      display: flex;
+      gap: 8px;
+
+      &__button {
+        color: $clr-light-a0;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition:
+          color 0.3s ease-in-out,
+          scale 0.3s ease-in-out;
+
+        &:hover {
+          color: $clr-primary-a50;
+          scale: 1.3;
+        }
+      }
+    }
+  }
+
   &--collapsed {
     overflow: hidden;
     transition: width 0.3s ease-in-out;

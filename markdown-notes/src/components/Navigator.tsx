@@ -10,6 +10,7 @@ import React from 'react';
 import NotebookFinder from './NotebookFinder';
 import FolderSelector from './FolderSelector';
 import PageSelector from './PageSelector';
+import { SampleNotebooks } from '../constants/temp';
 
 const Navigator = () => {
   const [navWidth, setNavWidth] = useState(250);
@@ -44,6 +45,14 @@ const Navigator = () => {
     setIsCollapsed(newCollapsedState);
   };
 
+  const addNotebook = () => {
+    console.log('addNotebook is not yet implemented.');
+  };
+
+  const openSettings = () => {
+    console.log('openSettings is not yet implemented.');
+  };
+
   return (
     <div
       className={`navigator ${isCollapsed ? 'navigator--collapsed' : ''} ${isDragging ? 'navigator--dragging' : ''}`}
@@ -69,12 +78,20 @@ const Navigator = () => {
         <PageSelector />
       </div>
       <div className="navigator__footer">
-        {!isCollapsed && <span>3 notebooks</span>}
+        {!isCollapsed && <span>{SampleNotebooks.length} notebooks</span>}
         <div className="navigator__footer__actions">
-          <button aria-label="Add new notebook">
+          <button
+            className="navigator__footer__actions__button"
+            aria-label="Add new notebook"
+            onClick={addNotebook}
+          >
             <MdAdd />
           </button>
-          <button aria-label="Settings">
+          <button
+            className="navigator__footer__actions__button"
+            aria-label="Settings"
+            onClick={openSettings}
+          >
             <MdSettings />
           </button>
         </div>
