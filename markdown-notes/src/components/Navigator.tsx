@@ -6,11 +6,11 @@ import {
   MdSettings,
   MdAdd
 } from 'react-icons/md';
-import React from 'react';
 import NotebookFinder from './NotebookFinder';
 import FolderSelector from './FolderSelector';
 import PageSelector from './PageSelector';
 import { SampleNotebooks } from '../constants/temp';
+import React from 'react';
 
 const Navigator = () => {
   const [navWidth, setNavWidth] = useState(250);
