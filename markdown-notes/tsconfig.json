@@ -24,7 +24,7 @@
     "jest",
     "src/setupTests.ts",
     "electron.js",
-    "eslint.config.mjs",
+    "eslint.rc.js",
     "main.ts"
   ],
   "types": ["typePatches"]

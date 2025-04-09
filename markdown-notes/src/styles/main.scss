@@ -6,6 +6,8 @@
 @use 'base/root';
 
 // Components
+@use 'components/bread-crumbs';
+@use './components/editor';
 @use 'components/folder-selector';
 @use 'components/navigator';
 @use 'components/notebook-finder';
