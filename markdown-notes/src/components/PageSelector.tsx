@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { SamplePages as sp } from '../constants/temp';
 import { LuFolderClosed, LuFolderOpen } from 'react-icons/lu';
+import { useDirectoryContext } from '../contexts/DirectoryContext';
 
 const FolderSelector = () => {
-  const [pages] = useState(sp);
-  const [activePage, setActivePage] = useState(pages[0]);
+  const { files, activeFile, setActiveFile } = useDirectoryContext();
   const [isPagesDirOpen, setIsPagesDirOpen] = useState(false);
   return (
     <div className="page-selector-container">
@@ -27,7 +26,7 @@ const FolderSelector = () => {
           <p className="page-selector__header__label">Current folder:</p>
           <div className="page-selector__header__title">
             <LuFolderOpen aria-hidden="true" />
-            <span>{activePage}</span>
+            <span>{activeFile}</span>
           </div>
         </div>
         <div
@@ -40,15 +39,15 @@ const FolderSelector = () => {
         role="listbox"
         aria-hidden={!isPagesDirOpen}
       >
-        {pages
-          .filter((p) => p !== activePage)
-          .map((p) => (
+        {files
+          .filter((f) => f !== activeFile)
+          .map((f) => (
             <div
               className="page-selector__dropdown__notebook"
-              key={p}
+              key={f}
               onClick={(e) => {
                 e.stopPropagation();
-                setActivePage(p);
+                setActiveFile(f);
                 setIsPagesDirOpen(false);
               }}
               role="option"
@@ -56,7 +55,7 @@ const FolderSelector = () => {
               aria-selected={false}
             >
               <LuFolderClosed aria-hidden="true" />
-              <span>{p}</span>
+              <span>{f}</span>
             </div>
           ))}
       </div>

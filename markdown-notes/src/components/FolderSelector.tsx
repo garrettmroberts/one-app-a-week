@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { SampleFolders as sf } from '../constants/temp';
 import { LuFolderClosed, LuFolderOpen } from 'react-icons/lu';
+import { useDirectoryContext } from '../contexts/DirectoryContext';
 
 const FolderSelector = () => {
-  const [folders] = useState(sf);
-  const [activeFolder, setActiveFolder] = useState(folders[folders.length - 1]);
+  const { folders, activeFolder, setActiveFolder } = useDirectoryContext();
   const [isFoldersDirOpen, setIsFoldersDirOpen] = useState(false);
+
   return (
     <div className="folder-selector-container">
       <div

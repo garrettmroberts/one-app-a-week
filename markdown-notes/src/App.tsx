@@ -2,16 +2,16 @@ import './styles/main.scss';
 import Navigator from './components/Navigator';
 import React from 'react';
 import Editor from './components/Editor';
-import { context, MainContext } from './contexts/Context';
+import { DirectoryProvider } from './contexts/DirectoryContext';
 
 function App() {
   return (
-    <MainContext.Provider value={context}>
+    <DirectoryProvider>
       <main>
         <Navigator />
         <Editor />
       </main>
-    </MainContext.Provider>
+    </DirectoryProvider>
   );
 }
 

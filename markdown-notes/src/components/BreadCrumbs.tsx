@@ -1,19 +1,12 @@
 import React from 'react';
+import { useDirectoryContext } from '../contexts/DirectoryContext';
 
-interface BreadCrumbsProps {
-  notebook: string;
-  folder: string;
-  file: string;
-}
+const BreadCrumbs: React.FC = () => {
+  const { activeNotebook, activeFolder, activeFile } = useDirectoryContext();
 
-const BreadCrumbs: React.FC<BreadCrumbsProps> = ({
-  notebook,
-  folder,
-  file
-}) => {
   return (
     <div className="bread-crumbs">
-      <p>{`${notebook} > ${folder} > ${file}`}</p>
+      <p>{`${activeNotebook} > ${activeFolder} > ${activeFile}`}</p>
     </div>
   );
 };

@@ -26,7 +26,7 @@ const Editor: React.FC = () => {
 
   return (
     <div className="editor-wrapper">
-      <BreadCrumbs notebook="Study" folder="Unsorted" file="1-first-note" />
+      <BreadCrumbs />
       <section className="editor">
         <textarea
           ref={textAreaRef}
