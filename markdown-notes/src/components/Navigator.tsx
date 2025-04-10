@@ -18,26 +18,40 @@ const Navigator = () => {
   const [isDragging, setIsDragging] = useState(false);
 
   const draggingRef = useRef(false);
+  const mouseXRef = useRef(0);
 
-  const handleMouseDown = () => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault();
     draggingRef.current = true;
     setIsDragging(true);
+
+    mouseXRef.current = e.clientX;
+
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-  };
-
-  const handleMouseUp = () => {
-    draggingRef.current = false;
-    setIsDragging(false);
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
   };
 
   const handleMouseMove = (e: MouseEvent) => {
     if (!draggingRef.current) return;
 
     const newWidth = e.clientX;
-    setNavWidth(newWidth);
+
+    mouseXRef.current = newWidth;
+
+    if (newWidth >= 200) {
+      setNavWidth(newWidth);
+      setIsCollapsed(false);
+    } else if (newWidth <= 60) {
+      setIsCollapsed(true);
+    }
+  };
+
+  const handleMouseUp = () => {
+    draggingRef.current = false;
+    setIsDragging(false);
+
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
   };
 
   const handleToggleCollapse = () => {
@@ -96,7 +110,10 @@ const Navigator = () => {
           </button>
         </div>
       </div>
-      <div className="navigator__sizer" onMouseDown={() => handleMouseDown()} />
+      <div
+        className="navigator__sizer"
+        onMouseDown={(e) => handleMouseDown(e)}
+      />
     </div>
   );
 };
