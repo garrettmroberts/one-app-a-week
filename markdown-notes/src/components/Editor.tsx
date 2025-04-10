@@ -1,9 +1,21 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import BreadCrumbs from './BreadCrumbs';
-import { SampleNote as sn } from '../constants/temp';
+import { useDirectoryContext } from '../contexts/DirectoryContext';
 
 const Editor: React.FC = () => {
-  const [note, setNote] = useState(sn);
+  const { activeNotebook, activeFolder, activeFile } = useDirectoryContext();
+
+  const [fileContents, setFileContents] = useState(activeFile);
+
+  useEffect(() => {
+    if (activeNotebook === '' || activeFolder === '' || activeFile === '')
+      return;
+    setFileContents(
+      window.api.readFile(
+        `src/data/${activeNotebook}/${activeFolder}/${activeFile}`
+      ) || ''
+    );
+  }, [activeNotebook, activeFolder, activeFile]);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -33,8 +45,8 @@ const Editor: React.FC = () => {
           placeholder="Write your notes here..."
           className="editor__content"
           onKeyDown={handleKeyDown}
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
+          value={fileContents}
+          onChange={(e) => setFileContents(e.target.value)}
         />
       </section>
     </div>

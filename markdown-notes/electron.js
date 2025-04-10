@@ -10,7 +10,9 @@ function createWindow() {
     height: 800,
     webPreferences: {
       nodeIntegration: true,
-    },
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
+    }
   });
 
   const startURL = isDev
@@ -18,6 +20,10 @@ function createWindow() {
     : `file://${path.join(__dirname, '../build/index.html')}`;
 
   mainWindow.loadURL(startURL);
+
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.on('closed', () => (mainWindow = null));
 }

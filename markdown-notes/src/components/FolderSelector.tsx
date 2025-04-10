@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { SampleFolders as sf } from '../constants/temp';
 import { LuFolderClosed, LuFolderOpen } from 'react-icons/lu';
 import { useDirectoryContext } from '../contexts/DirectoryContext';
 
