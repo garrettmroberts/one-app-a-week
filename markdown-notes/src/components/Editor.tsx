@@ -1,9 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import BreadCrumbs from './BreadCrumbs';
 import { useDirectoryContext } from '../contexts/DirectoryContext';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 
 const Editor: React.FC = () => {
   const { activeNotebook, activeFolder, activeFile } = useDirectoryContext();
+
+  const saveFile = () => {
+    console.log('The save action is not yet implemented.');
+  };
+
+  useKeyboardShortcuts({
+    'Meta+s': saveFile, // Mac
+    'Ctrl+s': saveFile // Windows
+  });
 
   const [fileContents, setFileContents] = useState(activeFile);
 
