@@ -48,7 +48,7 @@ const Editor: React.FC = () => {
 
   return (
     <div className="editor-wrapper">
-      <BreadCrumbs />
+      <BreadCrumbs crumbs={[activeNotebook, activeFolder, activeFile]} />
       <section className="editor">
         <textarea
           ref={textAreaRef}
