@@ -1,4 +1,3 @@
-// Mock the Electron API that's exposed through preload.js
 window.api = {
   sayHello: jest.fn().mockReturnValue('Hello from preload.js!'),
   readFile: jest.fn().mockImplementation((path) => {

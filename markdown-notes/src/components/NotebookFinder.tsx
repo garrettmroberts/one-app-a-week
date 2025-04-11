@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LuNotebook, LuNotebookPen } from 'react-icons/lu';
-import { useDirectoryContext } from '../contexts/DirectoryContext';
+import { useDirectoryContext } from '../hooks/useDirectoryContext';
 
 const NotebookFinder = () => {
   const { notebooks, activeNotebook, setActiveNotebook } =

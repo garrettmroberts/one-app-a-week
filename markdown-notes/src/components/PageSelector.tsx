@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LuFolderClosed, LuFolderOpen } from 'react-icons/lu';
-import { useDirectoryContext } from '../contexts/DirectoryContext';
+import { useDirectoryContext } from '../hooks/useDirectoryContext';
 
 const FolderSelector = () => {
   const { files, activeFile, setActiveFile } = useDirectoryContext();

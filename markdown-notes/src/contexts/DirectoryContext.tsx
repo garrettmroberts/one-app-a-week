@@ -22,35 +22,31 @@ type DirectoryAction =
   | { type: 'SET_FILES'; payload: string[] }
   | { type: 'SET_ACTIVE_NOTEBOOK'; payload: string }
   | { type: 'SET_ACTIVE_FOLDER'; payload: string }
-  | { type: 'SET_ACTIVE_FILE'; payload: string };
-// | { type: 'ADD_NOTEBOOK'; payload: string }
-// | { type: 'ADD_FOLDER'; payload: string }
-// | { type: 'ADD_FILE'; payload: string }
-// | { type: 'REMOVE_NOTEBOOK'; payload: string }
-// | { type: 'REMOVE_FOLDER'; payload: string }
-// | { type: 'REMOVE_FILE'; payload: string }
-// | { type: 'UPDATE_NOTEBOOK'; payload: { oldName: string; newName: string } }
-// | { type: 'UPDATE_FOLDER'; payload: { oldName: string; newName: string } }
-// | { type: 'UPDATE_FILE'; payload: { oldName: string; newName: string } }
-// | { type: 'MOVE_FILE'; payload: { file: string; newFolder: string } }
-// | { type: 'MOVE_FOLDER'; payload: { folder: string; newNotebook: string } };
+  | { type: 'SET_ACTIVE_FILE'; payload: string }
+  | { type: 'ADD_NOTEBOOK'; payload: string }
+  | { type: 'ADD_FOLDER'; payload: string }
+  | { type: 'ADD_FILE'; payload: string }
+  | { type: 'REMOVE_NOTEBOOK'; payload: string }
+  | { type: 'REMOVE_FOLDER'; payload: string }
+  | { type: 'REMOVE_FILE'; payload: string }
+  | { type: 'UPDATE_NOTEBOOK'; payload: { oldName: string; newName: string } }
+  | { type: 'UPDATE_FOLDER'; payload: { oldName: string; newName: string } }
+  | { type: 'UPDATE_FILE'; payload: { oldName: string; newName: string } };
 
 interface DirectoryContextType extends DirectoryState {
   dispatch: Dispatch<DirectoryAction>;
   setActiveNotebook: (notebook: string) => void;
   setActiveFolder: (folder: string) => void;
   setActiveFile: (file: string) => void;
-  // addNotebook: (notebook: string) => void;
-  // addFolder: (folder: string) => void;
-  // addFile: (folder: string) => void;
-  // removeNotebook: (notebook: string) => void;
-  // removeFolder: (folder: string) => void;
-  // removeFile: (file: string) => void;
-  // updateNotebook: (oldName: string, newName: void) => void;
-  // updateFolder: (oldName: string, newName: string) => void;
-  // updateFile: (oldName: string, newName: string) => void;
-  // moveFolder: (folder: string, newFolder: string) => void;
-  // moveFile: (file: string, newFile: string) => void;
+  addNotebook: (notebook: string) => void;
+  addFolder: (folder: string) => void;
+  addFile: (folder: string) => void;
+  removeNotebook: (notebook: string) => void;
+  removeFolder: (folder: string) => void;
+  removeFile: (file: string) => void;
+  updateNotebook: (oldName: string, newName: void) => void;
+  updateFolder: (oldName: string, newName: string) => void;
+  updateFile: (oldName: string, newName: string) => void;
 }
 
 const initialState: DirectoryState = {
@@ -79,24 +75,69 @@ const directoryReducer = (
       return { ...state, activeFolder: action.payload };
     case 'SET_ACTIVE_FILE':
       return { ...state, activeFile: action.payload };
+    case 'ADD_NOTEBOOK':
+      return {
+        ...state,
+        notebooks: [...state.notebooks, action.payload]
+      };
+    case 'ADD_FOLDER':
+      return {
+        ...state,
+        folders: [...state.folders, action.payload]
+      };
+    case 'ADD_FILE':
+      return {
+        ...state,
+        files: [...state.files, action.payload]
+      };
+    case 'REMOVE_NOTEBOOK':
+      return {
+        ...state,
+        notebooks: state.notebooks.filter(
+          (notebook) => notebook !== action.payload
+        )
+      };
+    case 'REMOVE_FOLDER':
+      return {
+        ...state,
+        folders: state.folders.filter((folder) => folder !== action.payload)
+      };
+    case 'REMOVE_FILE':
+      return {
+        ...state,
+        files: state.files.filter((file) => file !== action.payload)
+      };
+    case 'UPDATE_NOTEBOOK':
+      return {
+        ...state,
+        notebooks: state.notebooks.map((notebook) =>
+          notebook === action.payload.oldName
+            ? action.payload.newName
+            : notebook
+        ) as string[]
+      };
+    case 'UPDATE_FOLDER':
+      return {
+        ...state,
+        folders: state.folders.map((folder) =>
+          folder === action.payload.oldName ? action.payload.newName : folder
+        )
+      };
+    case 'UPDATE_FILE':
+      return {
+        ...state,
+        files: state.files.map((file) =>
+          file === action.payload.oldName ? action.payload.newName : file
+        )
+      };
     default:
       return state;
   }
 };
 
-const DirectoryContext = createContext<DirectoryContextType | undefined>(
+export const DirectoryContext = createContext<DirectoryContextType | undefined>(
   undefined
 );
-
-export const useDirectoryContext = () => {
-  const context = useContext(DirectoryContext);
-  if (!context) {
-    throw new Error(
-      'useDirectoryContext must be used within a DirectoryProvider'
-    );
-  }
-  return context;
-};
 
 export const DirectoryProvider: React.FC<{ children: ReactNode }> = ({
   children
@@ -198,7 +239,34 @@ export const DirectoryProvider: React.FC<{ children: ReactNode }> = ({
     dispatch,
     setActiveNotebook,
     setActiveFolder,
-    setActiveFile
+    setActiveFile,
+    addNotebook: function (notebook: string): void {
+      throw new Error('Function not implemented.');
+    },
+    addFolder: function (folder: string): void {
+      throw new Error('Function not implemented.');
+    },
+    addFile: function (folder: string): void {
+      throw new Error('Function not implemented.');
+    },
+    removeNotebook: function (notebook: string): void {
+      throw new Error('Function not implemented.');
+    },
+    removeFolder: function (folder: string): void {
+      throw new Error('Function not implemented.');
+    },
+    removeFile: function (file: string): void {
+      throw new Error('Function not implemented.');
+    },
+    updateNotebook: function (oldName: string, newName: void): void {
+      throw new Error('Function not implemented.');
+    },
+    updateFolder: function (oldName: string, newName: string): void {
+      throw new Error('Function not implemented.');
+    },
+    updateFile: function (oldName: string, newName: string): void {
+      throw new Error('Function not implemented.');
+    }
   };
 
   return (

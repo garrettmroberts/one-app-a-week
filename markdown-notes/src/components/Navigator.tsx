@@ -9,10 +9,11 @@ import {
 import NotebookFinder from './NotebookFinder';
 import FolderSelector from './FolderSelector';
 import PageSelector from './PageSelector';
-import { SampleNotebooks } from '../constants/temp';
 import React from 'react';
+import { useDirectoryContext } from '../hooks/useDirectoryContext';
 
 const Navigator = () => {
+  const { notebooks } = useDirectoryContext();
   const [navWidth, setNavWidth] = useState(250);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -92,7 +93,7 @@ const Navigator = () => {
         <PageSelector />
       </div>
       <div className="navigator__footer">
-        {!isCollapsed && <span>{SampleNotebooks.length} notebooks</span>}
+        {!isCollapsed && <span>{notebooks.length} notebooks</span>}
         <div className="navigator__footer__actions">
           <button
             className="navigator__footer__actions__button"
