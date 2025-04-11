@@ -6,14 +6,22 @@ import {
   MdSettings,
   MdAdd
 } from 'react-icons/md';
-import NotebookFinder from './NotebookFinder';
-import FolderSelector from './FolderSelector';
-import PageSelector from './PageSelector';
 import React from 'react';
 import { useDirectoryContext } from '../hooks/useDirectoryContext';
+import Dropdown from './Dropdown';
 
 const Navigator = () => {
-  const { notebooks } = useDirectoryContext();
+  const {
+    notebooks,
+    activeNotebook,
+    setActiveNotebook,
+    folders,
+    activeFolder,
+    setActiveFolder,
+    files,
+    activeFile,
+    setActiveFile
+  } = useDirectoryContext();
   const [navWidth, setNavWidth] = useState(250);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -68,6 +76,18 @@ const Navigator = () => {
     console.log('openSettings is not yet implemented.');
   };
 
+  const handleNotebookSelect = (notebook: string) => {
+    setActiveNotebook(notebook);
+  };
+
+  const handleFolderSelect = (folder: string) => {
+    setActiveFolder(folder);
+  };
+
+  const handleFileSelect = (file: string) => {
+    setActiveFile(file);
+  };
+
   return (
     <div
       className={`navigator ${isCollapsed ? 'navigator--collapsed' : ''} ${isDragging ? 'navigator--dragging' : ''}`}
@@ -88,9 +108,24 @@ const Navigator = () => {
         </button>
       </div>
       <div className="navigator__body">
-        <NotebookFinder />
-        <FolderSelector />
-        <PageSelector />
+        <Dropdown
+          elements={notebooks}
+          activeElement={activeNotebook}
+          onSelect={handleNotebookSelect}
+          label="Current notebook:"
+        />
+        <Dropdown
+          elements={folders}
+          activeElement={activeFolder}
+          onSelect={handleFolderSelect}
+          label="Current folder:"
+        />
+        <Dropdown
+          elements={files}
+          activeElement={activeFile}
+          onSelect={handleFileSelect}
+          label="Current file:"
+        />
       </div>
       <div className="navigator__footer">
         {!isCollapsed && <span>{notebooks.length} notebooks</span>}
