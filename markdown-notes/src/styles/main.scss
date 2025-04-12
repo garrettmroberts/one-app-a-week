@@ -9,10 +9,8 @@
 @use 'components/bread-crumbs';
 @use 'components/dropdown';
 @use './components/editor';
-@use 'components/folder-selector';
+@use 'components/list';
 @use 'components/navigator';
-@use 'components/notebook-finder';
-@use 'components/page-selector';
 
 // Layout
 @use 'layout';

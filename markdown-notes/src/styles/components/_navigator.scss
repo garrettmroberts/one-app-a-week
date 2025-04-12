@@ -76,9 +76,15 @@
 
   &__body {
     position: relative;
-    grid-area: content;
-    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 10fr;
     overflow: scroll;
+
+    &__list-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+    }
   }
 
   &__footer {
@@ -267,5 +273,14 @@
         background-color: $clr-light-a0;
       }
     }
+  }
+}
+
+.context-menu {
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+
+  &--visible {
+    opacity: 1;
   }
 }

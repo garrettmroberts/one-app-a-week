@@ -6,21 +6,40 @@ import {
   MdSettings,
   MdAdd
 } from 'react-icons/md';
-import FolderSelector from './FolderSelector';
-import PageSelector from './PageSelector';
 import React from 'react';
 import { useDirectoryContext } from '../hooks/useDirectoryContext';
 import Dropdown from './Dropdown';
+import List from './List';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 
 const Navigator = () => {
-  const { notebooks, activeNotebook, setActiveNotebook } =
-    useDirectoryContext();
+  const {
+    notebooks,
+    activeNotebook,
+    setActiveNotebook,
+    folders,
+    activeFolder,
+    setActiveFolder,
+    files,
+    activeFile,
+    setActiveFile
+  } = useDirectoryContext();
   const [navWidth, setNavWidth] = useState(250);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
   const draggingRef = useRef(false);
   const mouseXRef = useRef(0);
+
+  const handleToggleCollapse = () => {
+    const newCollapsedState = !isCollapsed;
+    setIsCollapsed(newCollapsedState);
+  };
+
+  useKeyboardShortcuts({
+    'Meta+n': handleToggleCollapse, // Mac
+    'Ctrl+n': handleToggleCollapse // Windows
+  });
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
@@ -54,11 +73,6 @@ const Navigator = () => {
 
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
-  };
-
-  const handleToggleCollapse = () => {
-    const newCollapsedState = !isCollapsed;
-    setIsCollapsed(newCollapsedState);
   };
 
   const addNotebook = () => {
@@ -97,8 +111,24 @@ const Navigator = () => {
           }}
           label="Active Notebook: "
         />
-        <FolderSelector />
-        <PageSelector />
+        <div className="navigator__body__list-wrapper">
+          <List
+            elements={folders}
+            activeElement={activeFolder}
+            onSelect={(selected) => {
+              setActiveFolder(selected);
+            }}
+            label="Folders"
+          />
+          <List
+            elements={files}
+            activeElement={activeFile}
+            onSelect={(selected) => {
+              setActiveFile(selected);
+            }}
+            label="Files"
+          />
+        </div>
       </div>
       <div className="navigator__footer">
         {!isCollapsed && <span>{notebooks.length} notebooks</span>}
