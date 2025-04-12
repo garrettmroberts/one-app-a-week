@@ -72,6 +72,7 @@ const Dropdown: FC<DropdownProps> = ({
     <div className="dropdown-container" ref={dropdownRef}>
       <div
         className="dropdown"
+        data-testid="dropdown-button"
         onClick={() => {
           setIsOpen(!isOpen);
         }}
@@ -89,7 +90,7 @@ const Dropdown: FC<DropdownProps> = ({
           <p className="dropdown__header__label">{label}</p>
           <div className="dropdown__header__title">
             <LuNotebookPen aria-hidden="true" />
-            <span>{activeElement}</span>
+            <span data-testid="dropdown-active-element">{activeElement}</span>
           </div>
         </div>
         <div
@@ -102,12 +103,13 @@ const Dropdown: FC<DropdownProps> = ({
         className={`dropdown__dropdown ${isOpen ? 'dropdown__dropdown--visible' : ''}`}
         role="listbox"
         aria-hidden={!isOpen}
+        data-testid="dropdown-list"
       >
         {elements
           .filter((ele) => ele !== activeElement)
           .map((ele) => (
             <div
-              className="dropdown__dropdown__notebook"
+              className="dropdown__dropdown__ele"
               key={ele}
               onClick={(e) => {
                 e.stopPropagation();
@@ -117,6 +119,7 @@ const Dropdown: FC<DropdownProps> = ({
               role="option"
               tabIndex={isOpen ? 0 : -1}
               aria-selected={false}
+              data-testid="dropdown-list-element"
             >
               <LuNotebook aria-hidden="true" />
               <span>{ele}</span>

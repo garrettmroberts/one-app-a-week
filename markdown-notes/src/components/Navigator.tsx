@@ -6,14 +6,15 @@ import {
   MdSettings,
   MdAdd
 } from 'react-icons/md';
-import NotebookFinder from './NotebookFinder';
 import FolderSelector from './FolderSelector';
 import PageSelector from './PageSelector';
 import React from 'react';
 import { useDirectoryContext } from '../hooks/useDirectoryContext';
+import Dropdown from './Dropdown';
 
 const Navigator = () => {
-  const { notebooks } = useDirectoryContext();
+  const { notebooks, activeNotebook, setActiveNotebook } =
+    useDirectoryContext();
   const [navWidth, setNavWidth] = useState(250);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -88,7 +89,14 @@ const Navigator = () => {
         </button>
       </div>
       <div className="navigator__body">
-        <NotebookFinder />
+        <Dropdown
+          elements={notebooks}
+          activeElement={activeNotebook}
+          onSelect={(selected) => {
+            setActiveNotebook(selected);
+          }}
+          label="Active Notebook: "
+        />
         <FolderSelector />
         <PageSelector />
       </div>
