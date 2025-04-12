@@ -235,3 +235,37 @@
     }
   }
 }
+
+.context-menu {
+  background: $clr-surface-a30;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  min-width: 160px;
+  z-index: 1000;
+  overflow: hidden;
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__item {
+    padding: 8px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease-in-out;
+
+    &:hover {
+      background-color: $clr-primary-a0;
+    }
+
+    &--danger {
+      color: #d32f2f;
+
+      &:hover {
+        background-color: $clr-light-a0;
+      }
+    }
+  }
+}

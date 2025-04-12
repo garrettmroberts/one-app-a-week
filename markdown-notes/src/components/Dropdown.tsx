@@ -16,6 +16,12 @@ const Dropdown: FC<DropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [contextMenuVisible, setContextMenuVisible] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0
+  });
+  const contextMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -34,6 +40,34 @@ const Dropdown: FC<DropdownProps> = ({
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        contextMenuRef.current &&
+        !contextMenuRef.current.contains(event.target as Node) &&
+        contextMenuVisible
+      ) {
+        setContextMenuVisible(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [contextMenuVisible]);
+
+  const handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setContextMenuPosition({ x: event.clientX, y: event.clientY });
+    setContextMenuVisible(true);
+  };
+
+  const handleContextMenuAction = (action: string) => {
+    console.log(`${action} action triggered for ${activeElement}`);
+    setContextMenuVisible(false);
+  };
+
   return (
     <div className="dropdown-container" ref={dropdownRef}>
       <div
@@ -51,7 +85,7 @@ const Dropdown: FC<DropdownProps> = ({
           }
         }}
       >
-        <div className="dropdown__header">
+        <div className="dropdown__header" onContextMenu={handleContextMenu}>
           <p className="dropdown__header__label">{label}</p>
           <div className="dropdown__header__title">
             <LuNotebookPen aria-hidden="true" />
@@ -63,6 +97,7 @@ const Dropdown: FC<DropdownProps> = ({
           aria-hidden="true"
         />
       </div>
+
       <div
         className={`dropdown__dropdown ${isOpen ? 'dropdown__dropdown--visible' : ''}`}
         role="listbox"
@@ -87,6 +122,37 @@ const Dropdown: FC<DropdownProps> = ({
               <span>{ele}</span>
             </div>
           ))}
+      </div>
+
+      <div
+        className={`context-menu ${contextMenuVisible ? 'context-menu--visible' : ''}`}
+        style={{
+          position: 'fixed',
+          top: contextMenuPosition.y,
+          left: contextMenuPosition.x
+        }}
+        ref={contextMenuRef}
+      >
+        <ul className="context-menu__list">
+          <li
+            className="context-menu__item"
+            onClick={() => handleContextMenuAction('rename')}
+          >
+            Rename
+          </li>
+          <li
+            className="context-menu__item"
+            onClick={() => handleContextMenuAction('duplicate')}
+          >
+            Duplicate
+          </li>
+          <li
+            className="context-menu__item context-menu__item--danger"
+            onClick={() => handleContextMenuAction('delete')}
+          >
+            Delete
+          </li>
+        </ul>
       </div>
     </div>
   );
