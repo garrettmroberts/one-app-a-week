@@ -1,7 +1,6 @@
 import React, {
   Dispatch,
   createContext,
-  useContext,
   ReactNode,
   useEffect,
   useReducer
@@ -23,9 +22,9 @@ type DirectoryAction =
   | { type: 'SET_ACTIVE_NOTEBOOK'; payload: string }
   | { type: 'SET_ACTIVE_FOLDER'; payload: string }
   | { type: 'SET_ACTIVE_FILE'; payload: string }
-  | { type: 'ADD_NOTEBOOK'; payload: string }
-  | { type: 'ADD_FOLDER'; payload: string }
-  | { type: 'ADD_FILE'; payload: string }
+  | { type: 'CREATE_NOTEBOOK'; payload: string }
+  | { type: 'CREATE_FOLDER'; payload: string }
+  | { type: 'CREATE_FILE'; payload: string }
   | { type: 'REMOVE_NOTEBOOK'; payload: string }
   | { type: 'REMOVE_FOLDER'; payload: string }
   | { type: 'REMOVE_FILE'; payload: string }
@@ -38,9 +37,9 @@ interface DirectoryContextType extends DirectoryState {
   setActiveNotebook: (notebook: string) => void;
   setActiveFolder: (folder: string) => void;
   setActiveFile: (file: string) => void;
-  addNotebook: (notebook: string) => void;
-  addFolder: (folder: string) => void;
-  addFile: (folder: string) => void;
+  createNotebook: (notebook: string) => void;
+  createFolder: (folder: string) => void;
+  createFile: (folder: string) => void;
   removeNotebook: (notebook: string) => void;
   removeFolder: (folder: string) => void;
   removeFile: (file: string) => void;
@@ -75,17 +74,17 @@ const directoryReducer = (
       return { ...state, activeFolder: action.payload };
     case 'SET_ACTIVE_FILE':
       return { ...state, activeFile: action.payload };
-    case 'ADD_NOTEBOOK':
+    case 'CREATE_NOTEBOOK':
       return {
         ...state,
         notebooks: [...state.notebooks, action.payload]
       };
-    case 'ADD_FOLDER':
+    case 'CREATE_FOLDER':
       return {
         ...state,
         folders: [...state.folders, action.payload]
       };
-    case 'ADD_FILE':
+    case 'CREATE_FILE':
       return {
         ...state,
         files: [...state.files, action.payload]
@@ -234,21 +233,57 @@ export const DirectoryProvider: React.FC<{ children: ReactNode }> = ({
     dispatch({ type: 'SET_ACTIVE_FILE', payload: file });
   };
 
+  const createNotebook = async function (notebook: string): Promise<void> {
+    try {
+      const notebookPath = `src/data/${notebook}`;
+      const success = await window.api.writeDirectory(notebookPath);
+
+      if (success) {
+        dispatch({ type: 'CREATE_NOTEBOOK', payload: notebook });
+        dispatch({ type: 'SET_ACTIVE_NOTEBOOK', payload: notebook });
+      } else {
+        console.error(`Failed to create notebook: ${notebook}`);
+      }
+    } catch (error) {
+      console.error('Error creating notebook:', error);
+    }
+  };
+
+  const createFolder = async function (folder: string): Promise<void> {
+    try {
+      const folderPath = `src/data/${state.activeNotebook}/${folder}`;
+      const success = await window.api.writeDirectory(folderPath);
+      if (success) {
+        dispatch({ type: 'CREATE_FOLDER', payload: folder });
+        dispatch({ type: 'SET_ACTIVE_FOLDER', payload: folder });
+      }
+    } catch (error) {
+      console.error('Error creating folder:', error);
+    }
+  };
+
+  const createFile = async function (file: string): Promise<void> {
+    try {
+      const filePath = `src/data/${state.activeNotebook}/${state.activeFolder}/${file}.md`;
+      const success = await window.api.writeFile(filePath, '');
+      if (success) {
+        dispatch({ type: 'CREATE_FILE', payload: file });
+        dispatch({ type: 'SET_ACTIVE_FILE', payload: file });
+      }
+    } catch (error) {
+      console.error('Error creating file:', error);
+    }
+  };
+
   const value: DirectoryContextType = {
     ...state,
     dispatch,
     setActiveNotebook,
     setActiveFolder,
     setActiveFile,
-    addNotebook: function (notebook: string): void {
-      throw new Error('Function not implemented.');
-    },
-    addFolder: function (folder: string): void {
-      throw new Error('Function not implemented.');
-    },
-    addFile: function (folder: string): void {
-      throw new Error('Function not implemented.');
-    },
+    createNotebook,
+    createFolder,
+    createFile,
     removeNotebook: function (notebook: string): void {
       throw new Error('Function not implemented.');
     },

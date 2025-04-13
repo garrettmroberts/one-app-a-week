@@ -1,16 +1,20 @@
 import './styles/main.scss';
 import Navigator from './components/Navigator';
-import React from 'react';
 import Editor from './components/Editor';
 import { DirectoryProvider } from './contexts/DirectoryContext';
+import { UIProvider } from './contexts/UIContext';
+import Modal from './components/Modal';
 
 function App() {
   return (
     <DirectoryProvider>
-      <main>
-        <Navigator />
-        <Editor />
-      </main>
+      <UIProvider>
+        <main>
+          <Modal />
+          <Navigator />
+          <Editor />
+        </main>
+      </UIProvider>
     </DirectoryProvider>
   );
 }

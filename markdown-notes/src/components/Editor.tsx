@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import BreadCrumbs from './BreadCrumbs';
+import GettingStarted from './GettingStarted';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import { useDirectoryContext } from '../hooks/useDirectoryContext';
 
@@ -72,9 +73,16 @@ const Editor: React.FC = () => {
     }
   };
 
+  if (!activeNotebook || !activeFolder || !activeFile) {
+    return <GettingStarted />;
+  }
+
   return (
     <div className="editor-wrapper">
-      <BreadCrumbs crumbs={[activeNotebook, activeFolder, activeFile]} />
+      {activeNotebook !== '' && activeFolder !== '' && activeFile !== '' && (
+        <BreadCrumbs crumbs={[activeNotebook, activeFolder, activeFile]} />
+      )}
+
       <section className="editor">
         {saveStatus && <div className="save-status">{saveStatus}</div>}
         <textarea

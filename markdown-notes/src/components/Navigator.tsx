@@ -11,6 +11,8 @@ import { useDirectoryContext } from '../hooks/useDirectoryContext';
 import Dropdown from './Dropdown';
 import List from './List';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
+import { useUIContext } from '../hooks/useUIContext';
+import { ModalTypes } from '../contexts/UIContext';
 
 const Navigator = () => {
   const {
@@ -24,6 +26,7 @@ const Navigator = () => {
     activeFile,
     setActiveFile
   } = useDirectoryContext();
+  const { setModal } = useUIContext();
   const [navWidth, setNavWidth] = useState(250);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -75,12 +78,17 @@ const Navigator = () => {
     document.removeEventListener('mouseup', handleMouseUp);
   };
 
-  const addNotebook = () => {
-    console.log('addNotebook is not yet implemented.');
+  const openCreationModal = () => {
+    setModal(ModalTypes.CREATE_NOTEBOOK);
   };
 
   const openSettings = () => {
     console.log('openSettings is not yet implemented.');
+  };
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setModal(ModalTypes.CREATE_FILE);
   };
 
   return (
@@ -103,14 +111,17 @@ const Navigator = () => {
         </button>
       </div>
       <div className="navigator__body">
-        <Dropdown
-          elements={notebooks}
-          activeElement={activeNotebook}
-          onSelect={(selected) => {
-            setActiveNotebook(selected);
-          }}
-          label="Active Notebook: "
-        />
+        {notebooks.length > 0 && (
+          <Dropdown
+            elements={notebooks}
+            activeElement={activeNotebook}
+            onSelect={(selected) => {
+              setActiveNotebook(selected);
+            }}
+            label="Active Notebook: "
+          />
+        )}
+
         <div className="navigator__body__list-wrapper">
           <List
             elements={folders}
@@ -119,6 +130,7 @@ const Navigator = () => {
               setActiveFolder(selected);
             }}
             label="Folders"
+            onContextMenu={handleContextMenu}
           />
           <List
             elements={files}
@@ -136,7 +148,7 @@ const Navigator = () => {
           <button
             className="navigator__footer__actions__button"
             aria-label="Add new notebook"
-            onClick={addNotebook}
+            onClick={openCreationModal}
           >
             <MdAdd />
           </button>

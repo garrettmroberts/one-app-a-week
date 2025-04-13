@@ -12,6 +12,7 @@
   container-name: navigator;
   transition: width 0.3s ease-in-out;
   position: relative;
+  overflow: hidden;
 
   &--dragging {
     transition: none !important;
@@ -198,13 +199,13 @@
 
   &__sizer {
     position: absolute;
-    right: -5px;
+    right: 0;
     height: 100vh;
     width: 5px;
     z-index: 100;
     opacity: 0;
-    transition: opacity 0.2s ease-in-out;
     background-color: $clr-surface-a20;
+    transition: opacity 0.2s ease-in-out;
     cursor: ew-resize;
 
     &:hover {
@@ -278,9 +279,11 @@
 
 .context-menu {
   opacity: 0;
+  visibility: hidden;
   transition: opacity 0.2s ease-out;
 
   &--visible {
     opacity: 1;
+    visibility: visible;
   }
 }

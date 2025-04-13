@@ -4,6 +4,7 @@ window.api = {
     if (path.includes('nonexistent')) return null;
     return 'Mock file content';
   }),
+  writeDirectory: jest.fn().mockReturnValue(true),
   writeFile: jest.fn().mockReturnValue(true),
   listFiles: jest.fn().mockImplementation((path) => {
     if (path === 'src/data') return ['notebook1', 'notebook2'];

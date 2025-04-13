@@ -1,5 +1,7 @@
 import { useState, FC, useRef, useEffect } from 'react';
 import { LuNotebook, LuNotebookPen } from 'react-icons/lu';
+import { useUIContext } from '../hooks/useUIContext';
+import { ModalTypes } from '../contexts/UIContext';
 
 interface DropdownProps {
   elements: string[];
@@ -22,6 +24,8 @@ const Dropdown: FC<DropdownProps> = ({
     y: 0
   });
   const contextMenuRef = useRef<HTMLDivElement>(null);
+
+  const { setModal } = useUIContext();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -65,6 +69,9 @@ const Dropdown: FC<DropdownProps> = ({
 
   const handleContextMenuAction = (action: string) => {
     console.log(`${action} action triggered for ${activeElement}`);
+    if (action === 'create-folder') {
+      setModal(ModalTypes.CREATE_FOLDER);
+    }
     setContextMenuVisible(false);
   };
 
@@ -139,15 +146,9 @@ const Dropdown: FC<DropdownProps> = ({
         <ul className="context-menu__list">
           <li
             className="context-menu__item"
-            onClick={() => handleContextMenuAction('rename')}
+            onClick={() => handleContextMenuAction('create-folder')}
           >
-            Rename
-          </li>
-          <li
-            className="context-menu__item"
-            onClick={() => handleContextMenuAction('duplicate')}
-          >
-            Duplicate
+            Create folder
           </li>
           <li
             className="context-menu__item context-menu__item--danger"

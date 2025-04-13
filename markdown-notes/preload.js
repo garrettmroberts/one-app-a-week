@@ -17,6 +17,16 @@ contextBridge.exposeInMainWorld('api', {
     }
   },
 
+  writeDirectory: (dirPath) => {
+    try {
+      fs.mkdirSync(dirPath, { recursive: true });
+      return true;
+    } catch (error) {
+      console.error('Failed to create directory: ', error);
+      return false;
+    }
+  },
+
   writeFile: (filePath, content) => {
     try {
       fs.writeFileSync(filePath, content, 'utf-8');

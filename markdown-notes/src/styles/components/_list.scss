@@ -5,6 +5,10 @@
   background-color: rgba(0, 0, 0, 0.2);
   padding: 4px 8px;
   flex: 1;
+
+  &--empty {
+    background: none;
+  }
 }
 
 .list {
@@ -23,14 +27,10 @@
     }
   }
 
-  &:focus {
-    outline: 2px solid $clr-primary-a40;
-    outline-offset: 2px;
-  }
-
   &__header {
     color: $clr-primary-a50;
     font-size: 0.8rem;
+    cursor: default;
   }
 
   &__content {
@@ -47,6 +47,10 @@
       transition: all 0.2s ease;
       color: $clr-light-a0;
       border-radius: 4px;
+
+      & > span {
+        white-space: nowrap;
+      }
 
       &:hover {
         color: $clr-primary-a40;
