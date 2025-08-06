@@ -14,6 +14,7 @@ export default function Home() {
   const [subtopic, setSubtopic] = useState<string>('');
   const [currentLesson, setCurrentLesson] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [lectureLoading, setLectureLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [detailsState, setDetailsState] = useState({
     prompt: true,
@@ -86,21 +87,18 @@ export default function Home() {
       return;
     }
   
-    try {
-      const response = await fetch('/api/openai', {
-        method: 'POST',
+        try {
+      const response = await fetch(`/api/openai/syllabus?subject=${encodeURIComponent(subject)}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          input: `You are a teacher. Create a bulleted list of topics that should be studied for a student to gain a better understanding of ${subject}. Format your response as an array. Each array element should be an object with a name field and a subtopics field. Do not return triple backticks or the words 'json'.`,
-        }),
       });
-  
+
       const data = await response.json();
       if (response.ok) {
-        setSyllabus(JSON.parse(data.output_text) as Topic[]);
+        const parsedData = JSON.parse(data);
+        setSyllabus(parsedData.topics as Topic[]);
         localStorage.setItem("subject", subject);
   
         isProgrammaticChange.current = true;
@@ -125,10 +123,11 @@ export default function Home() {
   };
 
   const generateLesson = async (topic: string, subtopic: string) => {
+    setLectureLoading(true);
+    setCurrentLesson('');
 
     try {
       const eventSource = new EventSource(`/api/openai/lesson?subject=${subject}&topic=${topic}&subtopic=${subtopic}`);
-      setCurrentLesson('');
       setTopic(topic);
       setSubtopic(subtopic);
 
@@ -147,17 +146,21 @@ export default function Home() {
         const text = event.data;
         if (text === "[DONE]") {
           eventSource.close();
+          setLectureLoading(false);
         } else {
           setCurrentLesson(prev => prev + text);
+          setLectureLoading(false);
         }
       }
 
       eventSource.onerror = error => {
         console.error('stream error: ', error);
         eventSource.close();
+        setLectureLoading(false);
       }
     } catch (error) {
       setError('Error: ' + (error instanceof Error ? error.message : 'An unknown error occurred'));
+      setLectureLoading(false);
     } finally {
       setLoading(false);
     }
@@ -360,8 +363,70 @@ export default function Home() {
         <summary className="text-2xl font-bold mb-4 text-gray-800 cursor-pointer">
           {subtopic ? `Lecture on: ${localStorage.getItem("subject")} -> ${topic} -> ${subtopic}` : "Select a subtopic to view the lecture"}
         </summary>
-        <div className="text-gray-700 whitespace-pre-wrap">
-          {currentLesson || "No lecture available. Please select a subtopic."}
+        <div className="lecture-content prose prose-lg max-w-none text-gray-700">
+          {lectureLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-gray-600">Generating lecture...</span>
+              </div>
+            </div>
+          ) : currentLesson ? (
+            <div className="space-y-4">
+              {currentLesson.split('\n\n').map((paragraph, index) => {
+                const lines = paragraph.split('\n');
+                const hasListItems = lines.some(line => 
+                  line.trim().match(/^[\s]*[•\-\*]\s/) || // Bullet points
+                  line.trim().match(/^[\s]*\d+\.\s/) // Numbered lists
+                );
+                
+                if (hasListItems) {
+                  return (
+                    <div key={index} className="space-y-2">
+                      {lines.map((line, lineIndex) => {
+                        const trimmedLine = line.trim();
+                        const isBulletPoint = trimmedLine.match(/^[•\-\*]\s/);
+                        const isNumberedItem = trimmedLine.match(/^\d+\.\s/);
+                        
+                        if (isBulletPoint || isNumberedItem) {
+                          return (
+                            <div key={lineIndex} className="flex items-start space-x-2 ml-4 list-item">
+                              <span className={`mt-1 ${isBulletPoint ? 'list-bullet' : 'list-number'}`}>
+                                {isBulletPoint ? '•' : `${trimmedLine.match(/^\d+/)?.[0]}.`}
+                              </span>
+                              <span className="flex-1">
+                                {trimmedLine.replace(/^[•\-\*]\s/, '').replace(/^\d+\.\s/, '')}
+                              </span>
+                            </div>
+                          );
+                        } else if (trimmedLine) {
+                          return (
+                            <p key={lineIndex} className="text-base">
+                              {line}
+                            </p>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
+                  );
+                } else {
+                  return (
+                    <p key={index} className="text-base">
+                      {lines.map((line, lineIndex) => (
+                        <span key={lineIndex}>
+                          {line}
+                          {lineIndex < lines.length - 1 && <br />}
+                        </span>
+                      ))}
+                    </p>
+                  );
+                }
+              })}
+            </div>
+          ) : (
+            <p className="text-gray-500 italic">No lecture available. Please select a subtopic.</p>
+          )}
         </div>
       </details>
 
